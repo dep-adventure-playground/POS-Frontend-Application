@@ -9,12 +9,24 @@ import '../../../node_modules/admin-lte/plugins/datatables/jquery.dataTables.min
 import '../../../node_modules/admin-lte/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js';
 import '../../../node_modules/admin-lte/plugins/datatables-responsive/js/dataTables.responsive.min.js';
 import '../../../node_modules/admin-lte/plugins/datatables-responsive/js/responsive.bootstrap4.min.js';
-import { getAllCustomers, saveCustomer } from '../service/customer.service';
+import { deleteCustomer, getAllCustomers, saveCustomer } from '../service/customer.service';
 import { Customer } from '../model/customer';
 
 $("app-manage-customers").replaceWith('<div id="manage-customers">' + manageCustomers + '</div>');
 var html = '<style>' + style + '</style>';
 $("#dashboard").append(html);
+
+$("#tbl-customers tbody").on("click","tr .fas", async (event: Event)=>{
+    let id = $(event.target as any).parents("tr").find("td:first-child").text();
+    try{
+         await deleteCustomer(id);
+         alert("Customer has been deleted sucessfully")
+         loadAllCustomers()
+    }catch(error){
+        alert("Failed to delete the customer");
+    }
+   
+})
 
 let dataTable: any = null;
 
@@ -88,6 +100,8 @@ async function loadAllCustomers() {
         "ordering": false
     });
 
+    dataTable.page(Math.ceil(customers.length/5)-1).draw(false);
+
 }
 
 loadAllCustomers();
@@ -98,14 +112,23 @@ $("#btn-save").click(async () => {
     let name = <string>$("#txt-name").val();
     let address = <string>$("#txt-address").val();
 
-    let success = await saveCustomer(new Customer(id, name, address));
+    /* Front-end validation */
+    if (!id.match(/^C\d{3}$/) || name.trim().length==0 || address.trim().length==0){
+        alert("Invalid customer information");
+        return;
+    }
 
-    if (success) {
+    try{
+        await saveCustomer(new Customer(id, name, address));
         alert("Customer Saved");
         loadAllCustomers();
-    } else {
+    }catch(error){
         alert("Failed to save the customer");
+        // console.log(error);
     }
+
+
+    
 });
 
 
