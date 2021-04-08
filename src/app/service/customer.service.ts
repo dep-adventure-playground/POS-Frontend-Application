@@ -141,3 +141,23 @@ export function deleteCustomer(id: string): Promise<void> {
         })
     })
 }
+
+export function updateCustomer(id:string,customer:Customer): Promise<void> {
+
+    return new Promise((resolve,reject)=>{
+        $.ajax({
+            method: "PUT",
+            url: `http://localhost:8080/pos/customers?id=${id}`,
+            contentType: "application/json",
+            data: JSON.stringify(customer)
+        }).then(()=>{
+            let index=customers.findIndex((elm)=>elm.id===id);
+            customers[index].name=customer.name;
+            customers[index].address=customer.address;
+            resolve();
+        }).fail(()=>{
+            reject();
+        })
+    })
+
+}

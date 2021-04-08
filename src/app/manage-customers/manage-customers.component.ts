@@ -9,24 +9,35 @@ import '../../../node_modules/admin-lte/plugins/datatables/jquery.dataTables.min
 import '../../../node_modules/admin-lte/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js';
 import '../../../node_modules/admin-lte/plugins/datatables-responsive/js/dataTables.responsive.min.js';
 import '../../../node_modules/admin-lte/plugins/datatables-responsive/js/responsive.bootstrap4.min.js';
-import { deleteCustomer, getAllCustomers, saveCustomer } from '../service/customer.service';
+import { deleteCustomer, getAllCustomers, saveCustomer, updateCustomer } from '../service/customer.service';
 import { Customer } from '../model/customer';
+import { getAllItems } from '../service/item.service';
 
 $("app-manage-customers").replaceWith('<div id="manage-customers">' + manageCustomers + '</div>');
 var html = '<style>' + style + '</style>';
 $("#dashboard").append(html);
 
-$("#tbl-customers tbody").on("click","tr .fas", async (event: Event)=>{
+$("#tbl-customers tbody").on("click", "tr .fas", async (event: Event) => {
     let id = $(event.target as any).parents("tr").find("td:first-child").text();
-    try{
-         await deleteCustomer(id);
-         alert("Customer has been deleted sucessfully")
-         loadAllCustomers()
-    }catch(error){
+    try {
+        await deleteCustomer(id);
+        alert("Customer has been deleted sucessfully")
+        loadAllCustomers()
+    } catch (error) {
         alert("Failed to delete the customer");
     }
-   
+
 })
+
+$("#tbl-customers tbody").on("click", "tr", (event: Event) => {
+    let id = $(event.target as any).parents("tr").find("td:first-child").text();
+    let name = $(event.target as any).parents("tr").find("td:nth-child(2)").text();
+    let address = $(event.target as any).parents("tr").find("td:nth-child(3)").text();
+    $("#txt-id").val(id);
+    $("#txt-name").val(name);
+    $("#txt-address").val(address);
+    
+});
 
 let dataTable: any = null;
 
@@ -100,7 +111,7 @@ async function loadAllCustomers() {
         "ordering": false
     });
 
-    dataTable.page(Math.ceil(customers.length/5)-1).draw(false);
+    dataTable.page(Math.ceil(customers.length / 5) - 1).draw(false);
 
 }
 
@@ -113,22 +124,42 @@ $("#btn-save").click(async () => {
     let address = <string>$("#txt-address").val();
 
     /* Front-end validation */
-    if (!id.match(/^C\d{3}$/) || name.trim().length==0 || address.trim().length==0){
+    if (!id.match(/^C\d{3}$/) || name.trim().length == 0 || address.trim().length == 0) {
         alert("Invalid customer information");
         return;
     }
 
-    try{
-        await saveCustomer(new Customer(id, name, address));
-        alert("Customer Saved");
-        loadAllCustomers();
-    }catch(error){
-        alert("Failed to save the customer");
-        // console.log(error);
+    let customers = await getAllCustomers();
+    let update: boolean = false;
+    for (const customer of customers) {
+        if (id === customer.id) {
+            update = true;
+        }
+    }
+
+    if (update) {
+        try {
+            await updateCustomer(id,new Customer(null as any, name, address));
+            alert("Customer Updated");
+            loadAllCustomers();
+        } catch (error) {
+            alert("Failed to save the customer");
+            // console.log(error);
+        }
+    } else {
+        try {
+            await saveCustomer(new Customer(id, name, address));
+            alert("Customer Saved");
+            loadAllCustomers();
+        } catch (error) {
+            alert("Failed to save the customer");
+            // console.log(error);
+        }
     }
 
 
-    
+
+
 });
 
 
