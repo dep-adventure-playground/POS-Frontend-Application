@@ -54,7 +54,7 @@
     <div class="col-12 row qty-addtocart-group">
         <div class="col-7"></div>
         <div class="col-5 row">
-            <h4 class="col-4" style="text-align: right;">Quantity</h4>
+            <h4 class="col-4" style="text-align: right;">Qty</h4>
             <div class="col-3">
                 <input class="form-control" id="qty" name="qty" type="text">
             </div>
@@ -116,8 +116,12 @@
     </table>
 
     <!--Adding total cost and Order button-->
-    <div class="col-12 total-cost">
-        <h2 id="total-cost">Total Cost : Rs. 950/=</h2>
-        <button class="btn btn-success btn-lg" type="button">Order</button>
+    <div class="col-12 row total-cost" style="padding: 0;margin: 0px;">
+        <h2 id="total-cost" class="col-8" style="padding-left: 0;">Total Cost : Rs. 950/=</h2>
+        <div class="col-4 row" >
+            <div class="col-xl-8 col-6"></div>
+            <button class="btn btn-success btn-lg col-xl-4 col-6" type="button" style="transform: translateX(15px); text-align: center;">Order</button>
+        </div>
+
     </div>
 </main>
