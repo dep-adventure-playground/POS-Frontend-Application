@@ -93,12 +93,13 @@ export function saveCustomer(customer: Customer): Promise<void> {
          http.setRequestHeader('Content-Type', 'application/json');
  
          http.send(JSON.stringify(customer)); */
-        console.log("ABC");
         $.ajax({
             method: "POST",
             url: "http://localhost:8080/pos/customers",
-            contentType: "application/json",
-            data: JSON.stringify(customer)
+            // contentType: "application/json",
+            // data: JSON.stringify(customer)
+            contentType: "application/x-www-form-urlencoded",
+            data: $("#frm-customers").serialize()
         }).then(() => {
             customers.push(customer);
             resolve();

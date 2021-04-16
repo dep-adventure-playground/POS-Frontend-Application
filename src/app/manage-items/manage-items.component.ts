@@ -11,6 +11,7 @@ import '../../../node_modules/admin-lte/plugins/datatables-responsive/js/dataTab
 import '../../../node_modules/admin-lte/plugins/datatables-responsive/js/responsive.bootstrap4.min.js';
 import { deleteItem, getAllItems, saveItem, updateItem } from '../service/item.service';
 import { Item } from '../model/item';
+import { loadAllItemsToOrders } from '../place-orders/place-orders.component';
 
 $("app-manage-items").replaceWith('<div id="manage-items">' + manageItems + '</div>');
 var html = '<style>' + style + '</style>';
@@ -72,7 +73,7 @@ function oldLoadAllItems(): void {
 
 }
 
-async function loadAllItems(): Promise<void> {
+async function loadAllItems(){
 
     let items = await getAllItems();
 
@@ -150,6 +151,8 @@ $("#btn-save-item").click(async() => {
             alert("Failed to save the item")
         }
     }
+
+    loadAllItemsToOrders();
 
     
 });

@@ -12,6 +12,7 @@ import '../../../node_modules/admin-lte/plugins/datatables-responsive/js/respons
 import { deleteCustomer, getAllCustomers, saveCustomer, updateCustomer } from '../service/customer.service';
 import { Customer } from '../model/customer';
 import { getAllItems } from '../service/item.service';
+import { loadAllCustomersToOrders } from '../place-orders/place-orders.component';
 
 $("app-manage-customers").replaceWith('<div id="manage-customers">' + manageCustomers + '</div>');
 var html = '<style>' + style + '</style>';
@@ -157,6 +158,7 @@ $("#btn-save").click(async () => {
         }
     }
 
+    loadAllCustomersToOrders();
 
 
 
